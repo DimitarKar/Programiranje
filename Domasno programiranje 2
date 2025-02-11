@@ -1,0 +1,68 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+bool CanAtt(pair<int, int> queen1, pair<int, int> queen2) 
+{
+    return (queen1.first == queen2.first || queen1.second == queen2.second || abs(queen1.first - queen2.first) == abs(queen1.second - queen2.second));
+}
+
+bool IVC(vector<pair<int, int>>& queens) 
+{
+    for (int i = 0; i < queens.size(); i++) 
+    {
+        for (int j = i + 1; j < queens.size(); j++) 
+        {
+            if (CanAtt(queens[i], queens[j])) 
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+void FindSol(int Velicina, vector<pair<int, int>>& Moment, vector<vector<pair<int, int>>>& Site) 
+{
+    if (Moment.size() == Velicina) 
+    {
+        if (IVC(Moment)) 
+        {
+            Site.push_back(Moment);
+        }
+        return;
+    }
+    for (int row = 0; row < Velicina; row++) 
+    {
+        for (int col = 0; col < Velicina; col++) 
+        {
+            Moment.push_back({row, col});
+            FindSol(Velicina, Moment, Site);
+            Moment.pop_back();
+        }
+    }
+}
+
+int main() {
+    int Velicina;
+    cin >> Velicina;
+
+    vector<vector<pair<int, int>>> Site;
+    vector<pair<int, int>> Moment;
+
+    FindSol(Velicina, Moment, Site);
+
+    int Resenia = 0;
+    for (auto& res : Site) 
+    {
+        cout << ++Resenia << '\n';
+        for (auto& QP : res) 
+        {
+            cout << "(" << QP.first << ", " << QP.second << ") ";
+        }
+        cout << '\n';
+    }
+
+    cout << Resenia;
+    return 0;
+}
