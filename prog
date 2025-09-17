@@ -1,1 +1,67 @@
+eve za belman ford
+#include <bits/stdc++.h>
+using namespace std;
 
+const long long INF = (1LL<<60);
+
+struct Edge {
+    int from, to;
+    long long weight;
+    Edge(int u=0, int v=0, long long w=0) : from(u), to(v), weight(w) {}
+};
+
+pair<vector<long long>, bool> bellmanFord(int n, const vector<Edge>& edges, int src) {
+    vector<long long> dist(n + 1, INF);
+    dist[src] = 0;
+    for (int i = 1; i <= n - 1; ++i) {
+        bool changed = false;
+        for (const Edge &e : edges) {
+            if (dist[e.from] == INF) continue;
+            if (dist[e.from] + e.weight < dist[e.to]) {
+                dist[e.to] = dist[e.from] + e.weight;
+                changed = true;
+            }
+        }
+        if (!changed) break;
+    }
+    bool neg = false;
+    for (const Edge &e : edges) {
+        if (dist[e.from] == INF) continue;
+        if (dist[e.from] + e.weight < dist[e.to]) {
+            neg = true;
+            break;
+        }
+    }
+    return {dist, neg};
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, m;
+    cin >> n >> m;
+    vector<Edge> edges;
+    for (int i = 0; i < m; ++i) {
+        int u, v;
+        long long w;
+        cin >> u >> v >> w;
+        edges.emplace_back(u, v, w);
+    }
+    int src;
+    cin >> src;
+
+    auto res = bellmanFord(n, edges, src);
+    auto dist = res.first;
+    bool neg = res.second;
+
+    if (neg) {
+        cout << "Negative cycle detected\n";
+    } else {
+        for (int i = 1; i <= n; ++i) {
+            if (dist[i] == INF) cout << "INF\n";
+            else cout << dist[i] << "\n";
+        }
+    }
+    return 0;
+}
