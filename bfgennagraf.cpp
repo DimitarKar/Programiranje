@@ -2,6 +2,7 @@
 using namespace std;
 
 int main() {
+    srand(time(0));
     int m;
     cin>>m;
     int n = m+1;
